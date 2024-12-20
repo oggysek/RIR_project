@@ -60,8 +60,8 @@ quadcopter = Quadcopter(Mass, ...
                deltaT);
 
 % Define PIDs
-X_PID = PIDRegulator(.5, 0.0, 0.5); % Example PID gains for position control
-Y_PID = PIDRegulator(.5, 0.0, 0.5);
+X_PID = PIDRegulator(.1, 0.0, 0.5); % Example PID gains for position control
+Y_PID = PIDRegulator(.1, 0.0, 0.5);
 Z_PID = PIDRegulator(5.0, 0.0, 1.0);
 % Roll_PID = PIDRegulator(1.0, 0.0, 0.3);
 % Pitch_PID = PIDRegulator(1.0, 0.0, 0.3);
