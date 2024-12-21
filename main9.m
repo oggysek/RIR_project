@@ -37,7 +37,7 @@ ZMomentOfInertia =  0.047;  % [kg m^2]
 quadcopterInitState.BodyXYZPosition.X = 0;  % [m]
 quadcopterInitState.BodyXYZPosition.Y = 0;  % [m]
 quadcopterInitState.BodyXYZPosition.Z = -6; % [m]           
-quadcopterInitState.BodyXYZVelocity.X = 0;            
+quadcopterInitState.BodyXYZVelocity.X = 0;    % change to 0        
 quadcopterInitState.BodyXYZVelocity.Y = 0;            
 quadcopterInitState.BodyXYZVelocity.Z = 0;
 quadcopterInitState.BodyEulerAngle.Phi = 0;
@@ -60,45 +60,28 @@ quadcopter = Quadcopter(Mass, ...
                deltaT);
 
 % Define PIDs
-X_PID = PIDRegulator(.5, 0.0, 0.5); % Example PID gains for position control
-Y_PID = PIDRegulator(.5, 0.0, 0.5);
-Z_PID = PIDRegulator(5.0, 0.0, 1.0);
-% Roll_PID = PIDRegulator(1.0, 0.0, 0.3);
-% Pitch_PID = PIDRegulator(1.0, 0.0, 0.3);
-Yaw_PID = PIDRegulator(1.0, 0.0, 0.2);
+X_PID = PIDRegulator(1, 0, 0); % PID gains for position control
+Y_PID = PIDRegulator(1, 0.0, 0);
+Z_PID = PIDRegulator(1e-3, 0, 0.5);
+Roll_PID = PIDRegulator(1e-9, 0, 0);
+Pitch_PID = PIDRegulator(1.0, 0.0, 0);
+Yaw_PID = PIDRegulator(1.0, 0.0, 0);
 
 % For plot
+i_p = 0;
 Path = zeros(simulationTime/deltaT,3);
 
 quadcopterActualState = quadcopter.GetState();
 
 % Simulation
-for i = 1 : simulationTime/deltaT
+for i = 0 :deltaT: simulationTime
+
     % Trajectory and control calculations
-    [X_desired, Y_desired, Z_desired] = TrajectoryPlanner(i*deltaT, timeForWaypointPasage, wayPoints);
-
-    X_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.X, X_desired, deltaT);
-    Y_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.Y, Y_desired, deltaT);
-    Z_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.Z, Z_desired, deltaT);
-
-    Phi_command = X_PID.GetCurrentAction();
-    Theta_command = Y_PID.GetCurrentAction();
-    TotalThrust_command = Mass * quadcopter.g - Z_PID.GetCurrentAction();
-
-%     Roll_PID.CalculateAction(quadcopterActualState.BodyEulerAngle.Phi, Phi_command, deltaT);
-%     Pitch_PID.CalculateAction(quadcopterActualState.BodyEulerAngle.Theta, Theta_command, deltaT);
-    Yaw_PID.CalculateAction(quadcopterActualState.BodyEulerAngle.Psi, 0, deltaT);
-
-%     M1_command = Roll_PID.GetCurrentAction();
-%     M2_command = Pitch_PID.GetCurrentAction();
-%     M3_command = Yaw_PID.GetCurrentAction();
-    M1_command = Phi_command;
-    M2_command = Theta_command;
-    M3_command = Yaw_PID.GetCurrentAction();
+    [X_desired, Y_desired, Z_desired] = TrajectoryPlanner(i, timeForWaypointPasage, wayPoints);
 
     % Apply control actions
-    quadcopter.TotalThrustControlAction(TotalThrust_command);
-    quadcopter.AttitudeControlAction(M1_command, M2_command, M3_command);
+    quadcopter.TotalThrustControlAction(Mass * quadcopter.g); % !vyresit, aby to kopenzovalo i kdyz je natoceny (neco s promitnutim totalthrust do Z)
+    quadcopter.AttitudeControlAction(1e-7, 0, 1e-10); % (x-rot, y-rot, z-rot)
 
     % Update state of quadcopter
     quadcopter.UpdateState();
@@ -107,10 +90,10 @@ for i = 1 : simulationTime/deltaT
     quadcopterActualState = quadcopter.GetState();
 
     % Crash check
-    if (quadcopterActualState.BodyXYZPosition.Z >= 0)
-        msgbox('Quadcopter Crashed!', 'Error', 'error');
-        break;
-    end
+%     if (quadcopterActualState.BodyXYZPosition.Z >= 0)
+%         msgbox('Quadcopter Crashed!', 'Error', 'error');
+%         break;
+%     end
 
     % Waypoint check
 %     if (CheckWayPointTrack(...
@@ -123,9 +106,14 @@ for i = 1 : simulationTime/deltaT
 %         break;
 %     end
 
-Path(i,:) = quadcopter.state(1:3)';
+% Ploting
+i_p = i_p+1;    % index for ploting
+Path(i_p,:) = quadcopter.state(1:3)';
+end
 
-end   
 plot3(Path(:,1),Path(:,2),Path(:,3))
+xlabel("x")
+ylabel("y")
+zlabel("z")
 hold on
 plot3(wayPoints(:,1),wayPoints(:,2),wayPoints(:,3),"*")
