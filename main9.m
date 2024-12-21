@@ -60,28 +60,70 @@ quadcopter = Quadcopter(Mass, ...
                deltaT);
 
 % Define PIDs
-X_PID = PIDRegulator(1, 0, 0); % PID gains for position control
-Y_PID = PIDRegulator(1, 0.0, 0);
+P = 1e-3;
+D = 1;
+X_PID = PIDRegulator(P, 0, 0); % PID gains for position control
+Y_PID = PIDRegulator(P, 0, 0);
+
 Z_PID = PIDRegulator(1e-3, 0, 0.5);
-Roll_PID = PIDRegulator(1e-9, 0, 0);
-Pitch_PID = PIDRegulator(1.0, 0.0, 0);
-Yaw_PID = PIDRegulator(1.0, 0.0, 0);
+Phi_PID = PIDRegulator(P, 0, 0);
+Theta_PID = PIDRegulator(P, 0, 0);
+Psi_PID = PIDRegulator(P, 0, 0);
+
+M1_PID = PIDRegulator(P, 0, D);
+M2_PID = PIDRegulator(P, 0, D);
+M3_PID = PIDRegulator(P, 0, D);
 
 % For plot
 i_p = 0;
 Path = zeros(simulationTime/deltaT,3);
 
-quadcopterActualState = quadcopter.GetState();
-
 % Simulation
+quadcopterActualState = quadcopter.GetState();
 for i = 0 :deltaT: simulationTime
 
     % Trajectory and control calculations
-    [X_desired, Y_desired, Z_desired] = TrajectoryPlanner(i, timeForWaypointPasage, wayPoints);
+%     [X_desired, Y_desired, Z_desired] = TrajectoryPlanner(i, timeForWaypointPasage, wayPoints);
+    X_desired = 1;
+    Y_desired = 1;
+    Z_desired = -10;
 
+    % Translational position
+    X_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.X, X_desired, deltaT);
+    Y_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.Y, Y_desired, deltaT);
+
+    Phi_desired = -Y_PID.GetCurrentAction();
+    Theta_desired = X_PID.GetCurrentAction(); 
+    % saturation
+    Phi_desired = max(min(Phi_desired, 1), -1);
+    Theta_desired = max(min(Theta_desired, 1), -1);
+
+    % Attitude/Altitude
+    Z_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.Z, Z_desired, deltaT);
+    Phi_PID.CalculateAction(quadcopterActualState.BodyEulerAngle.Phi, Phi_desired, deltaT);
+    Theta_PID.CalculateAction(quadcopterActualState.BodyEulerAngle.Theta, Theta_desired, deltaT);
+    Psi_PID.CalculateAction(quadcopterActualState.BodyEulerAngle.Psi, 0, deltaT);   % We dont want no rotation in Z axis
+
+    TotalThrust_command = -Z_PID.GetCurrentAction() + Mass*quadcopter.g;
+    dPhi_desired = Phi_PID.GetCurrentAction();
+    dTheta_desired = Theta_PID.GetCurrentAction();
+    dPsi_desired = Psi_PID.GetCurrentAction();
+
+    TotalThrust_body = TotalThrust_command / ...
+    (cos(quadcopterActualState.BodyEulerAngle.Phi) * cos(quadcopterActualState.BodyEulerAngle.Theta));
+
+    % Angular Velocity
+    M1_PID.CalculateAction(quadcopterActualState.BodyAngularRate.dPhi, dPhi_desired, deltaT);
+    M2_PID.CalculateAction(quadcopterActualState.BodyAngularRate.dTheta, dTheta_desired, deltaT);
+    M3_PID.CalculateAction(quadcopterActualState.BodyAngularRate.dPsi, dPsi_desired, deltaT);
+
+    M1_command = M1_PID.GetCurrentAction();
+    M2_command = M2_PID.GetCurrentAction();
+    M3_command = M3_PID.GetCurrentAction();
+    
     % Apply control actions
-    quadcopter.TotalThrustControlAction(Mass * quadcopter.g); % !vyresit, aby to kopenzovalo i kdyz je natoceny (neco s promitnutim totalthrust do Z)
-    quadcopter.AttitudeControlAction(1e-7, 0, 1e-10); % (x-rot, y-rot, z-rot)
+    quadcopter.TotalThrustControlAction(TotalThrust_body); % !vyresit, aby to kopenzovalo i kdyz je natoceny (neco s promitnutim totalthrust do Z)
+    quadcopter.AttitudeControlAction(M1_command, 0, 0); % (x-rot, y-rot, z-rot)
 
     % Update state of quadcopter
     quadcopter.UpdateState();
