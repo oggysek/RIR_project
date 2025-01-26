@@ -86,13 +86,13 @@ for i = 0 :deltaT: simulationTime
 %     [X_desired, Y_desired, Z_desired] = TrajectoryPlanner(i, timeForWaypointPasage, wayPoints);
     X_desired = 1;
     Y_desired = 1;
-    Z_desired = -10;
+    Z_desired = -6;
 
     % Translational position
     X_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.X, X_desired, deltaT);
     Y_PID.CalculateAction(quadcopterActualState.BodyXYZPosition.Y, Y_desired, deltaT);
 
-    Phi_desired = -Y_PID.GetCurrentAction();
+    Phi_desired = Y_PID.GetCurrentAction();
     Theta_desired = X_PID.GetCurrentAction(); 
     % saturation
     Phi_desired = max(min(Phi_desired, 1), -1);

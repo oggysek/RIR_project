@@ -1,0 +1,19 @@
+Simulink model inspirovaný podle How To od Kováře
+
+Matlab skripty v tom zatím nejsou využity krom mainu
+
+Model kvadrokoptéry je z prací na internetu a zamýšlela jsem ho udělat tak aby se jednalo o observer co by porovnával hodnoty co vyplivne model od Kováře, ale ten mi nešel natáhnout do Simulinku. Teoreticky by to při nejhorším asi šlo přes tahání věcí do / z workspace, ale handle class Simulink moc nepodporuje. Případně můžeme udělat jen naši simulaci a tu vytáhneme do workspace a hodíme jako matici požadavků ve for smyčce do drona normálně v mainu.
+
+Práce co působily užitečně a mám z nich vytvořené rovnice atd:
+https://uu.diva-portal.org/smash/get/diva2:1870673/FULLTEXT01.pdf
+https://digitalcommons.mtu.edu/cgi/viewcontent.cgi?article=1528&context=etdr
+
+Proč to hází teď error nevím a už nemám čas to opravit, ale základní myšlenky by tam měly být dobře. 
+Počáteční podmínky jsou nastaveny v integrátoru v soustavě. 
+Bacha při operaci s vektory, ty sumační bločky jsou natvrdlé a zvládnou jen složku po složce, např X zadane-X aktuální. (proto všechny vektory vždy rozdělené, pak zas spojené a pak je z toho drátkové peklo)
+
+k ladění regulátorů jsem se nedostala, ale jsou tam defaultně hodnoty taky z nějaké práce co takto řídila drona takže by to nemuselo být úplně mimo.
+
+Bacha na bloček Matlab function, často nezvládají co má dělat. Proto i v části Trajectory Planner dělám že natahuju data z workspace, ale pak jsem ty matice prostě zkopírovala do funkce, protože si je pořádně neuměla načíst a pak házela kraviny. Teď už by měla být správně, ale ať víte že to není spolehlivé, kdybyste to plánovali použít třeba u toho drona.
+
+V přiloženém obrázku rozepsané co by každý subsystém měl dělat a co z něj/do něj lézt.
