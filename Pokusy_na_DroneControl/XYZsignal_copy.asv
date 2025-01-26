@@ -44,7 +44,7 @@ for k = 1:length(WayPts)
         
         for i = 1:length(z_sum)
             if t(i) >= start_section && t(i) <= end_section
-                z_sum(i) = 0;
+                z_sum(i) = -6;
                 y_sum(i) = 0; 
                 x_sum(i) = 0;
             end
@@ -97,12 +97,12 @@ Ycmd = timeseries(sigY(2:end,:),sigY(1,:));
 sigX = [t;x_sum];
 Xcmd = timeseries(sigX(2:end,:),sigX(1,:));
 
-clear section
-clear start_section
-clear end_section
-clear y_sum
-clear z_sum
-clear x_sum
-clear i
-clear k
+% clear section
+% clear start_section
+% clear end_section
+% clear y_sum
+% clear z_sum
+% clear x_sum
+% clear i
+% clear k
 
