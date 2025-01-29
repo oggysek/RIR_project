@@ -2,7 +2,7 @@
 figure;
 xlimit = [-1 5];
 ylimit = [-4 4];
-zlimit = [-11 0];
+zlimit = [-11 1];
 width = 750;
 height = 650;
 NewFigure(xlimit,ylimit,zlimit,-43,25,width,height);
