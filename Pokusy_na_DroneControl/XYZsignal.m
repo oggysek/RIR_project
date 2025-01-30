@@ -7,14 +7,7 @@
 % target/drone.
 
 % [x,y,z,t]
-WayPts = [
-            [0,0,-6,0];
-            [0,0,-6,5];
-            [1,1,-10,10];
-            [1,2,-4,15];
-            [2,2,-5,20];
-            [3,1,-6,25]
-         ];
+WayPts = [wayPoints, timeForWaypointPasage'];
 
 dX = [];
 dY = [];
@@ -32,15 +25,10 @@ TOFtime = 1;
 tss = 0.1;
 t = 0:tss:Tfinal;
 
-% Superpose signals
-x_sum = 0*t;
-z_sum = 0*t;
-y_sum = 0*t;
-
-% Initial xyz
-x_sum(1) = WayPts(1,1);
-y_sum(1) = WayPts(1,2);
-z_sum(1) = WayPts(1,3);
+% Superpose signals + initial conditions
+x_sum = 0*t + WayPts(1,1);
+y_sum = 0*t + WayPts(1,2);
+z_sum = 0*t + WayPts(1,3);
 
 for k = 2:length(WayPts)
     section = [WayPts(k-1,4),WayPts(k,4)];
