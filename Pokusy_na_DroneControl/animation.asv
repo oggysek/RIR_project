@@ -1,5 +1,5 @@
 %% Simulink 3D Animation with Moving Target
-animSpeed = 1;
+animSpeed = 0.1;
 
 figure;
 xlimit = [min(wayPoints(:,1))-1 max(wayPoints(:,1))+1];
@@ -78,7 +78,7 @@ function AnimEuler(t_plot,XYZs,EulerAngles,VXYZs)
     end    
 end
 
-function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars,animSpeed)
+function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars)
     t_section = 0;
     curve = animatedline('LineWidth',0.5);
     curveTR = animatedline('LineWidth',1,'LineStyle',':');
@@ -94,13 +94,13 @@ function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars,animSpeed)
             T_BtoI = matrixB2I(Euler(1),Euler(2),Euler(3));
             O_I = T_BtoI*O;
 
-            pro1 = O_I(:,1)+O_I(:,2) + transpose(XYZ);           
-            pro2 = O_I(:,1)-O_I(:,2) + transpose(XYZ);            
-            pro3 = -O_I(:,1)+O_I(:,2) + transpose(XYZ);           
-            pro4 = -O_I(:,1)-O_I(:,2) + transpose(XYZ);
+%             pro1 = O_I(:,1)+O_I(:,2) + transpose(XYZ)           
+%             pro2 = O_I(:,1)-O_I(:,2) + transpose(XYZ)            
+%             pro3 = -O_I(:,1)+O_I(:,2) + transpose(XYZ)           
+%             pro4 = -O_I(:,1)-O_I(:,2) + transpose(XYZ)
 
             addpoints(curve, XYZ(1), XYZ(2),XYZ(3))
-            addpoints(curveTR, TR(1),TR(2),TR(3))
+            % addpoints(curveTR, TR(1),TR(2),TR(3))
             head = scatter3(TR(1),TR(2),TR(3),'filled','MarkerFaceColor','black','MarkerEdgeColor','black');
 
             line1 = drawline(XYZ,O_I(:,1),'b--',1.5);
@@ -113,10 +113,10 @@ function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars,animSpeed)
             frame3 = drawline(XYZ,-0.5*O_I(:,1)+0.5*O_I(:,2),'black',2.5);
             frame4 = drawline(XYZ,-0.5*O_I(:,1)-0.5*O_I(:,2),'black',2.5);           
 %            
-            % head1 = scatter3(pro1(1),pro1(2),pro1(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
-            % head2 = scatter3(pro2(1),pro2(2),pro2(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
-            % head3 = scatter3(pro3(1),pro3(2),pro3(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
-            % head4 = scatter3(pro4(1),pro4(2),pro4(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
+%             head1 = scatter3(pro1(1),pro1(2),pro1(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
+%             head2 = scatter3(pro2(1),pro2(2),pro2(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
+%             head3 = scatter3(pro3(1),pro3(2),pro3(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
+%             head4 = scatter3(pro4(1),pro4(2),pro4(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
 
             drawnow
             pause(0.01)

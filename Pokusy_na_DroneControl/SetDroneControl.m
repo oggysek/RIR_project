@@ -5,8 +5,8 @@ clear
 positionTolerance = 0.1;    % [m]
 
 % At these times, the quadcopter must pass the appropriate waypoint
-timeForWaypointPasage = [100,200,300,400,500]; % [s]
-% timeForWaypointPasage = [100,200,300,400,500]*0.05;
+% timeForWaypointPasage = [100,200,300,400,500]; % [s]
+timeForWaypointPasage = [100,200,300,400,500]*0.2;
 
 % Waypoints [X, Y, Z][m] - these points must be flown by quadcopter
 wayPoints = [0 0 6;
