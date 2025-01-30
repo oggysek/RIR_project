@@ -1,8 +1,8 @@
 %% Simulink 3D Animation with Moving Target
 figure;
-xlimit = [-1 5];
-ylimit = [-4 4];
-zlimit = [-11 1];
+xlimit = [min(wayPoints(:,1))-1 max(wayPoints(:,1))+1];
+ylimit = [min(wayPoints(:,2))-1 max(wayPoints(:,2))+1];
+zlimit = [min(wayPoints(:,3))-1 max(wayPoints(:,3))+1];
 width = 750;
 height = 650;
 NewFigure(xlimit,ylimit,zlimit,-43,25,width,height);
@@ -43,17 +43,17 @@ function AnimEuler(t_plot,XYZs,EulerAngles,VXYZs)
             line5 = extendline(XYZ,O_I(:,1),'b:');
             drawnow
             pause(0.01)
-            
+
             % labels
             %title('3D view')
-          
+
             xlabel(string( num2str(t_plot(i),'%.1f') )+' sec   ');
-            
+
             dispstr7 = string( num2str( VXYZ(1),'%.1f' ) );
             dispstr8 = string( num2str( VXYZ(2),'%.1f' ) );
             dispstr9 = string( num2str( VXYZ(3),'%.1f' ) );
             vstr = 'Velocity ['+dispstr7+ ' , '+dispstr8 + ' , ' + dispstr9 + ']';
-            
+
             dispstr1 = string( num2str( rad2deg(Euler(1)),'%.1f' ) );
             dispstr2 = string( num2str( rad2deg(Euler(2)),'%.1f' ) );
             dispstr3 = string( num2str( rad2deg(Euler(3)),'%.1f' ) );
@@ -62,9 +62,9 @@ function AnimEuler(t_plot,XYZs,EulerAngles,VXYZs)
             dispstr6 = string( num2str( XYZ(3),'%.1f' ) );
             title('EulerAngle ['+dispstr1+' , '+dispstr2+' , '+dispstr3+']  XYZ [' + dispstr4...
                 + ' , ' +dispstr5+ ' , '+dispstr6 +']   ' + vstr);
-            
+
             t_section = t_section + 0.1;        
-            
+
             if i ~= length(EulerAngles)
                 delete(line1)
                 delete(line2)
@@ -87,25 +87,25 @@ function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars)
             XYZ = XYZs(i,:);
             VXYZ = VXYZs(i,:);
             TR = Tars(i,:);
-            
+
             O = eye(3);
             T_BtoI = matrixB2I(Euler(1),Euler(2),Euler(3));
             O_I = T_BtoI*O;
-                        
+
 %             pro1 = O_I(:,1)+O_I(:,2) + transpose(XYZ)           
 %             pro2 = O_I(:,1)-O_I(:,2) + transpose(XYZ)            
 %             pro3 = -O_I(:,1)+O_I(:,2) + transpose(XYZ)           
 %             pro4 = -O_I(:,1)-O_I(:,2) + transpose(XYZ)
-            
+
             addpoints(curve, XYZ(1), XYZ(2),XYZ(3))
-            addpoints(curveTR, TR(1),TR(2),TR(3))
+            % addpoints(curveTR, TR(1),TR(2),TR(3))
             head = scatter3(TR(1),TR(2),TR(3),'filled','MarkerFaceColor','black','MarkerEdgeColor','black');
-            
+
             line1 = drawline(XYZ,O_I(:,1),'b--',1.5);
             line2 = drawline(XYZ,O_I(:,2),'g--',1.5);
             line3 = drawline(XYZ,O_I(:,3),'r--',1.5);
             line5 = extendline(XYZ,O_I(:,1),'b:');
-            
+
             frame1 = drawline(XYZ,0.5*O_I(:,1)+0.5*O_I(:,2),'black',2.5);
             frame2 = drawline(XYZ,0.5*O_I(:,1)-0.5*O_I(:,2),'black',2.5);
             frame3 = drawline(XYZ,-0.5*O_I(:,1)+0.5*O_I(:,2),'black',2.5);
@@ -115,18 +115,18 @@ function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars)
 %             head2 = scatter3(pro2(1),pro2(2),pro2(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
 %             head3 = scatter3(pro3(1),pro3(2),pro3(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
 %             head4 = scatter3(pro4(1),pro4(2),pro4(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
-            
+
             drawnow
             pause(0.01)
-            
+
             % logs     
             xlabel(string( num2str(t_plot(i),'%.1f') )+' sec   ');
-            
+
             dispstr7 = string( num2str( VXYZ(1),'%.1f' ) );
             dispstr8 = string( num2str( VXYZ(2),'%.1f' ) );
             dispstr9 = string( num2str( VXYZ(3),'%.1f' ) );
             vstr = 'Velocity ['+dispstr7+ ' , '+dispstr8 + ' , ' + dispstr9 + ']';
-            
+
             dispstr1 = string( num2str( rad2deg(Euler(1)),'%.1f' ) );
             dispstr2 = string( num2str( rad2deg(Euler(2)),'%.1f' ) );
             dispstr3 = string( num2str( rad2deg(Euler(3)),'%.1f' ) );
@@ -135,19 +135,19 @@ function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars)
             dispstr6 = string( num2str( XYZ(3),'%.1f' ) );
             title('EulerAngle ['+dispstr1+' , '+dispstr2+' , '+dispstr3+']  XYZ [' + dispstr4...
                 + ' , ' +dispstr5+ ' , '+dispstr6 +']   ' + vstr);
-            
-            t_section = t_section + 0.4;            
+
+            t_section = t_section + 5;            
 
             delete(line1)
             delete(line2)
             delete(line3)
             delete(line5)
-                
+
             delete(frame1)
             delete(frame2)
             delete(frame3)
             delete(frame4)
-                
+
             delete(head)
 
         end
@@ -173,7 +173,7 @@ function SubAnimEuler(t_plot,XYZs,EulerAngles,TR)
             line3 = drawline(XYZ,O_I(:,3),'r');
             line4 = extendline(XYZ,O_I(:,3),'r--');
             line5 = extendline(XYZ,O_I(:,1),'b:');
-            
+
             % labels
             title('XZ plane (side view)')
             dispstr1 = string( num2str( rad2deg(Euler(1)),'%.1f' ) );
@@ -186,7 +186,7 @@ function SubAnimEuler(t_plot,XYZs,EulerAngles,TR)
             + ' , ' +dispstr5+ ' , '+dispstr6 +']';
             txt1 = annotation('textbox', [0.35, 0.9, 0.1, 0.1], 'string', mystr);
 
-            
+
             subplot(1,2,2)
             NewFigure([-3 3],[-1 5],[0 6],0,90,1200,600);
             scatter3(TR(1),TR(2),TR(3),'filled','MarkerFaceColor','black','MarkerEdgeColor','black')       
@@ -198,7 +198,7 @@ function SubAnimEuler(t_plot,XYZs,EulerAngles,TR)
             % labels
             title('XY plane (top view)')
 
-            
+
             drawnow
             pause(0.01)        
             if i ~= length(EulerAngles)
@@ -214,7 +214,7 @@ function SubAnimEuler(t_plot,XYZs,EulerAngles,TR)
                 delete(line10)
                 delete(txt1)
             end
-                        
+
             t_section = t_section + 0.2;
         end
     end    
