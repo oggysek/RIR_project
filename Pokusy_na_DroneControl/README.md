@@ -1,6 +1,6 @@
 **Jak spustit simulaci?**
 
-1. open SetDroneControl.m script and run it
-2. open the XYZsiganl.m script and run it
-3. open DroneControl.slx simulink file and run it.
-4. open the animation.m script and run it to see the animation.
+1. Otevri SetDroneControl.m script a spust jej
+2. Otevri XYZsiganl.m script a spust jej
+3. Otevri DroneControl.slx simulink soubor a spust jej
+4. Otevri animation.m script a spust jej, aby jsi videl animaci.

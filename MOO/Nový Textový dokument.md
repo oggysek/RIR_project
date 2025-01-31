@@ -1,0 +1,2 @@
+- prozkoumat, jestli matice mají spravny rozměr
+- 
