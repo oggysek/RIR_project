@@ -1,16 +1,14 @@
 %% Simulink 3D Animation
-animSpeed = 0.5;
+animSpeed = 0.45;
 
 figure;
 plot3(WayPts(:,1),WayPts(:,2),WayPts(:,3), "bo")    % targets
 xlimit = [-1 4];
 ylimit = [-1.5 3.5];
-zlimit = [0 max(wayPoints(:,3))+1];
+zlimit = [-12 0];
 width = 750;
 height = 650;
 NewFigure(xlimit,ylimit,zlimit,-43,25,width,height);
-% VisAttitude([0,0,0],'black')
-% VisAttitude(deg2rad(RefEuler),'g:')
 pause(1)
 AnimEulerTar(out.time,out.XYZ,out.EulerAngles,out.VXYZ,out.Tar,animSpeed)
 
@@ -18,7 +16,7 @@ AnimEulerTar(out.time,out.XYZ,out.EulerAngles,out.VXYZ,out.Tar,animSpeed)
 %% Local Functions
 
 function NewFigure(xlim,ylim,zlim,viewx,viewy,w,h)
-    set(gca, 'XLim', xlim,'YLim',ylim,'ZLim',zlim);
+    set(gca, 'XLim', xlim,'YLim',ylim,'ZLim',zlim,'ZDir','reverse');
     view(viewx,viewy)
     x0=10;
     y0=10;
@@ -61,11 +59,6 @@ function AnimEulerTar(t_plot,XYZs,EulerAngles,VXYZs,Tars,animSpeed)
             frame2 = drawline(XYZ,0.5*O_I(:,1)-0.5*O_I(:,2),'black',2.5);
             frame3 = drawline(XYZ,-0.5*O_I(:,1)+0.5*O_I(:,2),'black',2.5);
             frame4 = drawline(XYZ,-0.5*O_I(:,1)-0.5*O_I(:,2),'black',2.5);           
-%            
-            % head1 = scatter3(pro1(1),pro1(2),pro1(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
-            % head2 = scatter3(pro2(1),pro2(2),pro2(3),'filled','MarkerFaceColor','b','MarkerEdgeColor','b')
-            % head3 = scatter3(pro3(1),pro3(2),pro3(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
-            % head4 = scatter3(pro4(1),pro4(2),pro4(3),'filled','MarkerFaceColor','g','MarkerEdgeColor','g')
 
             drawnow
             pause(0.01)

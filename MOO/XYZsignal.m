@@ -1,12 +1,6 @@
 %% Generate signals
-% Before runnning this script, please load the WayPts matrix.
-% I provide a WayPts matrix from the DroneSignal_square_copy.mat file
-% It defines the trajectory of the moving Target.
-% You can change it, but NOTICE that ther you should not change the first
-% two rows, since it is defined as the "take-off" process of the
-% target/drone.
-
 % [x,y,z,t]
+
 WayPts = [wayPoints, timeForWaypointPasage'];
 
 dX = [];
@@ -43,26 +37,6 @@ for k = 2:length(WayPts)
         end
     end
 end
-
-%% skokovy prikaz
-% for k = 1:length(WayPts)
-%     if k == 1
-%         start_section = 0;
-%     else
-%         section = [WayPts(k-1,4),WayPts(k,4)];
-%         start_section = section(1);
-%     end
-% 
-%     for i = 1:length(z_sum)               % pro kazdy interval pricita linearne souradnice
-%         if t(i) > start_section
-%             z_sum(i) = WayPts(k,3);
-%             y_sum(i) = WayPts(k,2);
-%             x_sum(i) = WayPts(k,1);
-%         end
-%     end
-% end
-%%
-
 
 % Po poslednim bodu zustane v poslednim bodu jeste nejakou chvili (+10)
 start_section = WayPts(length(WayPts),4);
