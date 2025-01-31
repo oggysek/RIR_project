@@ -44,23 +44,23 @@ for k = 2:length(WayPts)
     end
 end
 
-% %% skokovy prikaz
-% for k = 1:length(WayPts)
-%     if k == 1
-%         start_section = 0;
-%     else
-%         section = [WayPts(k-1,4),WayPts(k,4)];
-%         start_section = section(1);
-%     end
-% 
-%     for i = 1:length(z_sum)               % pro kazdy interval pricita linearne souradnice
-%         if t(i) > start_section
-%             z_sum(i) = WayPts(k,3);
-%             y_sum(i) = WayPts(k,2);
-%             x_sum(i) = WayPts(k,1);
-%         end
-%     end
-% end
+%% skokovy prikaz
+for k = 1:length(WayPts)
+    if k == 1
+        start_section = 0;
+    else
+        section = [WayPts(k-1,4),WayPts(k,4)];
+        start_section = section(1);
+    end
+
+    for i = 1:length(z_sum)               % pro kazdy interval pricita linearne souradnice
+        if t(i) > start_section
+            z_sum(i) = WayPts(k,3);
+            y_sum(i) = WayPts(k,2);
+            x_sum(i) = WayPts(k,1);
+        end
+    end
+end
 %%
 
 
